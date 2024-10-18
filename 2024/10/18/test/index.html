@@ -22,7 +22,7 @@
 
   
 
-  <title>Hello World | Hexo</title>
+  <title>Hexo</title>
 
   
 
@@ -99,11 +99,11 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">Hello World</h1>
+          <h1 class="title-wrap"></h1>
           <h2 class="title-sub-wrap">
             <strong>John Doe</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-10-18T05:26:36.202Z" itemprop="datePublished">2024-10-18</time>
+            <time  class="article-date" datetime="2024-10-18T14:57:22.057Z" itemprop="datePublished">2024-10-18</time>
           </h2>
           
           
@@ -134,20 +134,42 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <h1 id="文件上传-写入"><a href="#文件上传-写入" class="headerlink" title="文件上传(写入)"></a>文件上传(写入)</h1><h2 id="java中文件上传的利用"><a href="#java中文件上传的利用" class="headerlink" title="java中文件上传的利用"></a>java中文件上传的利用</h2><h3 id="上传jsp🐎"><a href="#上传jsp🐎" class="headerlink" title="上传jsp🐎"></a>上传jsp🐎</h3><p>上传jsp的条件</p>
+<p>1.未进行后缀限制或黑名单可绕过</p>
+<p>2.使用tomcat搭建，存在jsp解析环境</p>
+<h3 id="上传html造成xss"><a href="#上传html造成xss" class="headerlink" title="上传html造成xss"></a>上传html造成xss</h3><p>这个危害低</p>
+<p>实战情况中用于白名单未限制html，或者没有jsp解析环境，可以水洞</p>
+<h3 id="关于spring-boot中的jsp限制"><a href="#关于spring-boot中的jsp限制" class="headerlink" title="关于spring boot中的jsp限制"></a>关于spring boot中的jsp限制</h3><p>在大多数项目都是基于SpringBoot架构进行的开发，官方不建议 SpringBoot 使用 JSP，并且做了一些限制。</p>
+<p>具体官方文档：<code>https://docs.spring.io/spring-boot/docs/2.1.1.RELEASE/reference/htmlsingle/#boot-features-jsp-limitations</code></p>
+<p>在spring boot中使用jsp的话需要引入相关依赖，自建WEB-INF,web.xml等操作，然后在pom.xml文件中导入解析依赖</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--用于编译jsp--&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;</span><br><span class="line">    &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>如果pom.xml中存在对应依赖，也就可能存在jsp解析，就可以尝试上🐎</p>
+<h2 id="文件上传中的注意点"><a href="#文件上传中的注意点" class="headerlink" title="文件上传中的注意点"></a>文件上传中的注意点</h2><ul>
+<li>是否存在文件检测</li>
+<li>上传路径是否能够解析</li>
+<li>上传路径是否可控</li>
+</ul>
+<h3 id="文件检测"><a href="#文件检测" class="headerlink" title="文件检测"></a>文件检测</h3><p>文件检测分为白名单和黑名单</p>
+<p>如果是黑名单，列如限制了jsp等等</p>
+<p>绕过方法：</p>
+<p>1.使用其它可解析后缀</p>
+<p><code>.jsp/.jspa/.jspx/.jsw/.jsv/.jspf/.jtml/.jSp/.jSpx/.jSpa/.jSw/.jSv/.jSpf/.jHtml</code></p>
+<p>2.使用截断</p>
+<p><code>::$DATA/%00</code></p>
+<h2 id="挖掘思路"><a href="#挖掘思路" class="headerlink" title="挖掘思路"></a>挖掘思路</h2><h2 id="白盒"><a href="#白盒" class="headerlink" title="白盒"></a>白盒</h2><p>文件上传关键字</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">uploda</span><br><span class="line">//上传</span><br><span class="line">File</span><br><span class="line">FileUpload</span><br><span class="line">FileUploadBase</span><br><span class="line">FileItemIteratorImpl</span><br><span class="line">FileItemStreamImpl</span><br><span class="line">FileUtils</span><br><span class="line">UploadHandleServlet</span><br><span class="line">FileLoadServlet</span><br><span class="line">FileOutputStream</span><br><span class="line">DiskFileItemFactory</span><br><span class="line">MultipartRequestEntity</span><br><span class="line">MultipartFile</span><br><span class="line">com.oreilly.servlet.MultipartRequest</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<h2 id="黑盒"><a href="#黑盒" class="headerlink" title="黑盒"></a>黑盒</h2><p>上传(写入)常见功能点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">用户头像</span><br><span class="line">订单信息图片</span><br><span class="line">模板文件上传</span><br><span class="line">模板文件修改</span><br><span class="line">文章演示图片</span><br><span class="line">网站首页图片</span><br><span class="line">后台文件操作</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<h2 id="实战案例"><a href="#实战案例" class="headerlink" title="实战案例"></a>实战案例</h2><h3 id="Tmall前台文件上传"><a href="#Tmall前台文件上传" class="headerlink" title="Tmall前台文件上传"></a>Tmall前台文件上传</h3><h3 id="jspxCMS文件写入"><a href="#jspxCMS文件写入" class="headerlink" title="jspxCMS文件写入"></a>jspxCMS文件写入</h3><h3 id="publiccms文件写入"><a href="#publiccms文件写入" class="headerlink" title="publiccms文件写入"></a>publiccms文件写入</h3><p><a target="_blank" rel="noopener" href="https://gitee.com/sanluan/PublicCMS/issues/IAAM5W">https://gitee.com/sanluan/PublicCMS/issues/IAAM5W</a></p>
+<h1 id="文件解压"><a href="#文件解压" class="headerlink" title="文件解压"></a>文件解压</h1><p>漏洞原理：网站存在压缩包解压功能，但是在解压时未对压缩包中的文件进行校验，导致文件上传</p>
+<p>实战中会出现，文件上传和写入进行了校验，但是没有对文件解压进行判断，可能导致任意文件上传&#x2F;写入覆盖</p>
+<h2 id="挖掘思路-1"><a href="#挖掘思路-1" class="headerlink" title="挖掘思路"></a>挖掘思路</h2><h3 id="白盒-1"><a href="#白盒-1" class="headerlink" title="白盒"></a>白盒</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unzip</span><br><span class="line">//解压</span><br><span class="line">unzipFile</span><br><span class="line">new ZipInputStream</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
+<h3 id="黑盒-1"><a href="#黑盒-1" class="headerlink" title="黑盒"></a>黑盒</h3><p>这个就比较简单了，看网站是否有上传zip的功能或者解压功能</p>
+<h2 id="实战案例-1"><a href="#实战案例-1" class="headerlink" title="实战案例"></a>实战案例</h2><h3 id="MCMS文件解压"><a href="#MCMS文件解压" class="headerlink" title="MCMS文件解压"></a>MCMS文件解压</h3><h3 id="kkFileView文件解压"><a href="#kkFileView文件解压" class="headerlink" title="kkFileView文件解压"></a>kkFileView文件解压</h3>
       </section>
 
       
@@ -159,8 +181,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/10/18/test/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">(no title)</h2>
+        <a href="/2024/10/18/test-1/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">test</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -168,6 +190,20 @@
   </article>
 </div>
           
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2024/10/18/hello-world/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
           
         </nav>
       
